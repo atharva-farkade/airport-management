@@ -23,8 +23,7 @@ export const verifyJwt = asyncHandler(async (req, res, next) => {
         }
 
         req.user = user;
-        console.log("Authentication successful, user attached to req:", req.user);
-        console.log("user",user)
+        console.log("Authentication successful, jwt verifyed");
         next();
     } catch (error) {
         return next(new ApiError("unauthorised request", 401));

@@ -16,12 +16,12 @@ app.use(cookieParser());
 
 import userRouter from './routes/user.routes.js';
 import adminrouter from './routes/admin.routes.js';
-import {verifyJwt} from "./middlewares/auth.middleware.js";
-import {verifyAdminAccess} from "./middlewares/access.middleware.js";
-
+import staffrouter from './routes/staff.routes.js';
 
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1',verifyJwt, verifyAdminAccess, adminrouter);
+app.use('/api/v1', adminrouter);
+app.use('/api/v1', staffrouter);
+
 
 app.get('/', (req, res) => {
   res.send('Server is running fine ✅');
