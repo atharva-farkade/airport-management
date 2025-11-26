@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { verifyJwt} from "../middlewares/auth.middleware.js";
 import { verifyVendorAccess } from "../middlewares/vendor.middleware.js";
-import { grantPermission } from "../controllers/admin.controller.js";
 import { checkVendorRole } from "../controllers/vendor.controller.js";
 
 const vendorrouter = Router()

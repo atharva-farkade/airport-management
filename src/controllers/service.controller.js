@@ -1,5 +1,6 @@
 import { ServiceRequest } from "../models/serviceRequest.model.js";
 import { airplanes } from "../constants.js";
+import asyncHandler from "../utils/asyncHandlers.js";
 
 export const requestServices = async (req, res) => {
   try {
@@ -27,3 +28,7 @@ export const requestServices = async (req, res) => {
     return res.status(500).json({ success: false, message: "Error requesting services" });
   }
 };
+
+const grantPermission = asyncHandler(async (req, res) => res.send("Staff route accessed successfully"));
+export { grantPermission};
+

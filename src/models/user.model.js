@@ -20,6 +20,10 @@ const userSchema = new Schema({
         unique: true,
         lowercase: true,
         trim: true,
+        match: [
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      'Please enter a valid email address'
+    ]
 
     },
     password: {
@@ -41,7 +45,15 @@ const userSchema = new Schema({
     },
 
     number: { 
-        type: String 
+        type: String,
+        unique: true,
+        required: true,
+        validate: {
+      validator: function(v) {
+        return /^\d{10}$/.test(v);  // Exactly 10 digits, no spaces or symbols
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    }
     }, 
 
     refreshToken: {
