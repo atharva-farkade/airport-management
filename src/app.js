@@ -15,12 +15,19 @@ app.use(express.static('public'));
 app.use(cookieParser());
 
 import userRouter from './routes/user.routes.js';
-import adminrouter from './routes/admin.routes.js';
-import staffrouter from './routes/staff.routes.js';
+import adminRouter from './routes/admin.routes.js';
+import staffRouter from './routes/staff.routes.js';
+import vendorRouter from './routes/vendor.routes.js';
+import financeRouter from './routes/finance.routes.js';
+
+ 
 
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1', adminrouter);
-app.use('/api/v1', staffrouter);
+app.use('/api/v1/admin', adminRouter);
+app.use('/api/v1/staff', staffRouter);
+app.use('/api/v1/vendor', vendorRouter);
+app.use('/api/v1/finance', financeRouter);
+
 
 
 app.get('/', (req, res) => {
