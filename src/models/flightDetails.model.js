@@ -58,6 +58,11 @@ const flightServiceSchema = new mongoose.Schema({
   etd: { // Estimated Time of Departure
     type: Date
   },
+  status:{
+    type: String,
+    enum: ['scheduled', 'arrived'],
+    default: 'scheduled'
+  }
 
 })
 
