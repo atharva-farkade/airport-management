@@ -104,6 +104,11 @@ const updateFlightStatus = asyncHandler(async (req, res) => {
         throw new ApiError('Flight not found', 404);
     }
 
+    const io = req.app.get("io");
+    if (status === "arrived") {
+        io.emit("flight_arrived", flight);  
+        console.log("SOCKET EVENT SENT: flight_arrived");
+    }
 
     return res
         .status(200)

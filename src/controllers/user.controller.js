@@ -3,6 +3,7 @@ import asyncHandler from '../utils/asyncHandlers.js';
 import {User} from '../models/user.model.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
+import { FlightDetails } from '../models/flightDetails.model.js';
 
 
 
@@ -152,4 +153,21 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken };
+const getArrivedFlights = asyncHandler(async (req, res) => {
+    const flights = await FlightDetails.find({ status: "arrived" });
+    
+    if (flights.length === 0) {
+        return res.status(200).json({
+            success: true,
+            data: [],
+            message: "No flights arrived"
+        });
+    } 
+    
+    res.status(200).json({
+        success: true,
+        data: flights
+    });
+});
+
+export { registerUser,getArrivedFlights, loginUser, logoutUser, refreshAccessToken };
