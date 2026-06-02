@@ -3,11 +3,12 @@ import { FlightDetails } from '../models/flightDetails.model.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { User } from '../models/user.model.js';
+import { TurnaroundManager } from '../utils/TurnaroundManager.js';
+import { TurnaroundStatus } from '../constants.js';
 
 
 //  Check the user role to give access
 const checkUserRole = asyncHandler(async (req, res) => res.send("Admin route accessed successfully"));
-console.log("Admin route accessed by user");
 export { checkUserRole };
 
 const registerFlightDetails = asyncHandler(async (req, res) => {
@@ -16,11 +17,9 @@ const registerFlightDetails = asyncHandler(async (req, res) => {
     const { flightNumber, aircraftRegistration, airlineName, aircraftType, origin, destination, sta, std, eta, etd } = req.body;
 
 
-    // Check for existing flight
-    const existingFlight = await FlightDetails.findOne({
-        $or: [{ flightNumber }, { aircraftRegistration }],
-    });
-    if (existingFlight) throw new ApiError("Flight already exists", 409);
+    // Check for existing flight with same flight number
+    const existingFlight = await FlightDetails.findOne({ flightNumber });
+    if (existingFlight) throw new ApiError("Flight with this number already exists", 409);
 
     // Create flight details
     const registerFlight = await FlightDetails.create({
@@ -35,19 +34,30 @@ const registerFlightDetails = asyncHandler(async (req, res) => {
         eta,
         etd
     });
-      return res
-    .status(201)
-    .json(new ApiResponse(201, registerFlight, "Flight registered successfully"));
+    return res
+        .status(201)
+        .json(new ApiResponse(201, registerFlight, "Flight registered successfully"));
 
-}) 
+})
 
 export { registerFlightDetails };
 
 const getAllFlights = asyncHandler(async (req, res) => {
-    const flights = await FlightDetails.find();
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    const [flights, total] = await Promise.all([
+        FlightDetails.find().sort({ createdAt: -1 }).skip(skip).limit(limit),
+        FlightDetails.countDocuments()
+    ]);
+
     return res
-    .status(200)
-    .json(new ApiResponse(200, flights, "Flights retrieved successfully"));
+        .status(200)
+        .json(new ApiResponse(200, {
+            flights,
+            pagination: { page, limit, total, totalPages: Math.ceil(total / limit) }
+        }, "Flights retrieved successfully"));
 });
 
 export { getAllFlights };
@@ -60,22 +70,30 @@ const getAllUsers = asyncHandler(async (req, res) => {
         role: user.role,
         gender: user.gender
     }));
-    
+
     res.status(200).json(new ApiResponse(200, userData, "Users retrieved successfully"));
 });
 export { getAllUsers };
 
 const removeUser = asyncHandler(async (req, res) => {
-      const { username, email } = req.body;
-      const existingUser = await User.findOne({
-    $or: [{ email }, { username }],
-  });
-      if (!existingUser) {
+    const { username, email } = req.query;
+
+    if (!username && !email) {
+        throw new ApiError('Provide username or email as query param', 400);
+    }
+
+    const existingUser = await User.findOne({
+        $or: [
+            ...(email ? [{ email }] : []),
+            ...(username ? [{ username }] : [])
+        ],
+    });
+    if (!existingUser) {
         throw new ApiError('User not found', 404);
     }
 
     // Find and delete user
-  await User.deleteOne({ _id: existingUser._id });
+    await User.deleteOne({ _id: existingUser._id });
 
     return res
         .status(200)
@@ -89,30 +107,54 @@ const updateFlightStatus = asyncHandler(async (req, res) => {
     const { status } = req.body;
 
     // Validate status
-    if (!['scheduled', 'arrived'].includes(status)) {
-        throw new ApiError('Invalid status. Must be "scheduled" or "arrived"', 400);
+    if (!['arrived', 'departed'].includes(status)) {
+        throw new ApiError('Invalid status. Must be "arrived" or "departed"', 400);
     }
 
-    // Find and update flight
-    const flight = await FlightDetails.findByIdAndUpdate(
-        flightId,
-        { status, etd: status === 'arrived' ? new Date() : undefined },
-        { new: true }
-    );
-
+    const flight = await FlightDetails.findById(flightId);
     if (!flight) {
         throw new ApiError('Flight not found', 404);
     }
 
     const io = req.app.get("io");
+
+    // Handle different status transitions
     if (status === "arrived") {
-        io.emit("flight_arrived", flight);  
-        console.log("SOCKET EVENT SENT: flight_arrived");
+        flight.status = 'arrived';
+        flight.actualArrivalTime = new Date();
+        flight.turnaroundStatus = TurnaroundStatus.LANDED;
+        await flight.save();
+
+        // Auto-transition to ON_BLOCK
+        await TurnaroundManager.updateTurnaroundStatus(flightId, io);
+
+        io.emit("flight_arrived", {
+            flightId: flight._id,
+            flightNumber: flight.flightNumber,
+            turnaroundStatus: flight.turnaroundStatus
+        });
+    } else if (status === "departed") {
+        await TurnaroundManager.markDeparted(flightId, io);
     }
+
+    const updatedFlight = await FlightDetails.findById(flightId);
 
     return res
         .status(200)
-        .json(new ApiResponse(200, flight, `Flight status updated to ${status}`));
+        .json(new ApiResponse(200, updatedFlight, `Flight status updated to ${status}`));
 });
 
 export { updateFlightStatus };
+
+// Get turnaround summary for a flight
+const getTurnaroundSummary = asyncHandler(async (req, res) => {
+    const { flightId } = req.params;
+
+    const summary = await TurnaroundManager.getTurnaroundSummary(flightId);
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, summary, "Turnaround summary retrieved successfully"));
+});
+
+export { getTurnaroundSummary };

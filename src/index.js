@@ -1,8 +1,8 @@
-import express from "express";
 import dotenv from "dotenv";
 import { app } from "./app.js"; 
 import { Server } from "socket.io";
 import http from "http";
+import jwt from "jsonwebtoken";
 import connectDB from "./db/index.js";
 
 dotenv.config();
@@ -12,6 +12,21 @@ const io = new Server(server, {
     cors: {
         origin: process.env.CORS_ORIGIN,
         credentials: true
+    }
+});
+
+// Socket.IO authentication middleware
+io.use((socket, next) => {
+    const token = socket.handshake.auth?.token || socket.handshake.headers?.authorization?.replace("Bearer ", "");
+    if (!token) {
+        return next(new Error("Authentication required"));
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        socket.user = decoded;
+        next();
+    } catch (err) {
+        return next(new Error("Invalid token"));
     }
 });
 

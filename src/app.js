@@ -35,4 +35,18 @@ app.get('/', (req, res) => {
   res.send('Server is running fine ✅');
 });
 
+// Global error handler
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const isOperational = statusCode < 500 || err.isOperational === true;
+    const message = isOperational ? err.message : "Internal Server Error";
+
+    res.status(statusCode).json({
+        success: false,
+        statusCode,
+        message,
+        ...(process.env.NODE_ENV !== "production" && isOperational && { stack: err.stack })
+    });
+});
+
 export {app}; 

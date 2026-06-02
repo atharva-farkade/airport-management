@@ -1,0 +1,2109 @@
+{
+    "info": {
+        "_postman_id": "airport-service-management-api",
+        "name": "Airport Service Management Platform API",
+        "description": "Complete API collection for testing the Airport Service Management Platform. Includes authentication, admin, staff, vendor, and finance endpoints.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "refreshToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "flightId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "serviceRequestId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "invoiceId",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "🔐 Authentication",
+            "description": "User authentication and session management endpoints",
+            "item": [
+                {
+                    "name": "Register - Admin User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.data && jsonData.data.accessToken) {",
+                                    "    pm.collectionVariables.set('accessToken', jsonData.data.accessToken);",
+                                    "    pm.collectionVariables.set('refreshToken', jsonData.data.refreshToken);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"admin_user\",\n    \"email\": \"admin@airport.com\",\n    \"password\": \"Admin@123\",\n    \"role\": \"airport_admin\",\n    \"gender\": \"male\",\n    \"number\": \"9876543210\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "register"
+                            ]
+                        },
+                        "description": "Register a new admin user"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Register - Airline Staff User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"staff_user\",\n    \"email\": \"staff@airline.com\",\n    \"password\": \"Staff@123\",\n    \"role\": \"airline_staff\",\n    \"gender\": \"female\",\n    \"number\": \"9876543211\",\n    \"airline\": \"Air India\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "register"
+                            ]
+                        },
+                        "description": "Register a new airline staff user"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Register - Refueling Vendor",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"refueling_vendor\",\n    \"email\": \"refueling@vendor.com\",\n    \"password\": \"Vendor@123\",\n    \"role\": \"service_vendor\",\n    \"gender\": \"male\",\n    \"number\": \"9876543212\",\n    \"specialization\": \"REFUELING\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "register"
+                            ]
+                        },
+                        "description": "Register a vendor for refueling services"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Register - Catering Vendor",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"catering_vendor\",\n    \"email\": \"catering@vendor.com\",\n    \"password\": \"Vendor@123\",\n    \"role\": \"service_vendor\",\n    \"gender\": \"female\",\n    \"number\": \"9876543213\",\n    \"specialization\": \"CATERING\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "register"
+                            ]
+                        },
+                        "description": "Register a vendor for catering services"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Register - Finance User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"finance_user\",\n    \"email\": \"finance@airport.com\",\n    \"password\": \"Finance@123\",\n    \"role\": \"finance\",\n    \"gender\": \"male\",\n    \"number\": \"9876543214\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "register"
+                            ]
+                        },
+                        "description": "Register a new finance user"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Login User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.data) {",
+                                    "    pm.collectionVariables.set('accessToken', jsonData.data.accessToken);",
+                                    "    pm.collectionVariables.set('refreshToken', jsonData.data.refreshToken);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"admin_user\",\n    \"password\": \"Admin@123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "login"
+                            ]
+                        },
+                        "description": "Login with username/email and password. Tokens are automatically saved to collection variables."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Logout User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/logout",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "logout"
+                            ]
+                        },
+                        "description": "Logout the currently logged in user"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Refresh Access Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.data) {",
+                                    "    pm.collectionVariables.set('accessToken', jsonData.data.accessToken);",
+                                    "    pm.collectionVariables.set('refreshToken', jsonData.data.refreshToken);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/refresh-token",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "refresh-token"
+                            ]
+                        },
+                        "description": "Refresh the access token using refresh token"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "👨‍✈️ Admin Operations",
+            "description": "Airport admin endpoints for flight and user management",
+            "item": [
+                {
+                    "name": "Check Admin Access",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/admin/",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                ""
+                            ]
+                        },
+                        "description": "Verify admin role access"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Register Flight Details",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.data && jsonData.data._id) {",
+                                    "    pm.collectionVariables.set('flightId', jsonData.data._id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"flightNumber\": \"AI-101\",\n    \"aircraftRegistration\": \"VT-ALJ\",\n    \"airlineName\": \"Air India\",\n    \"aircraftType\": \"Boeing 787\",\n    \"origin\": \"DEL\",\n    \"destination\": \"BOM\",\n    \"sta\": \"2026-01-22T10:00:00.000Z\",\n    \"std\": \"2026-01-22T12:00:00.000Z\",\n    \"eta\": \"2026-01-22T10:00:00.000Z\",\n    \"etd\": \"2026-01-22T12:00:00.000Z\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/admin/flight-details",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "flight-details"
+                            ]
+                        },
+                        "description": "Register a new flight. The flight ID is saved automatically for subsequent requests."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Flights",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/admin/upcoming-flights",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "upcoming-flights"
+                            ]
+                        },
+                        "description": "Get all registered flights"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Users",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/admin/users",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "users"
+                            ]
+                        },
+                        "description": "Get all registered users"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Remove User",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"user_to_remove\",\n    \"email\": \"user@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/admin/remove-user",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "remove-user"
+                            ]
+                        },
+                        "description": "Remove a user by username or email"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Flight Status - Mark Arrived",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"arrived\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/admin/flight/{{flightId}}/status",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "flight",
+                                "{{flightId}}",
+                                "status"
+                            ]
+                        },
+                        "description": "Update flight status (scheduled, arrived, departed)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Flight Status - Mark Departed",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"departed\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/admin/flight/{{flightId}}/status",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "flight",
+                                "{{flightId}}",
+                                "status"
+                            ]
+                        },
+                        "description": "Mark flight as departed"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Turnaround Summary",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/admin/flight/{{flightId}}/turnaround",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "flight",
+                                "{{flightId}}",
+                                "turnaround"
+                            ]
+                        },
+                        "description": "Get detailed turnaround summary for a flight"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "✈️ Airline Staff Operations",
+            "description": "Airline staff endpoints for service requests and management",
+            "item": [
+                {
+                    "name": "Check Staff Access",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/staff/",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "staff",
+                                ""
+                            ]
+                        },
+                        "description": "Verify airline staff access"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Arrived Flights",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/staff/flight-details",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "staff",
+                                "flight-details"
+                            ]
+                        },
+                        "description": "Get all arrived flights that need servicing"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Request Services - Multiple Services",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.data && jsonData.data.length > 0) {",
+                                    "    pm.collectionVariables.set('serviceRequestId', jsonData.data[0]._id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"flightId\": \"{{flightId}}\",\n    \"services\": [\n        {\n            \"serviceType\": \"REFUELING\",\n            \"quantityEstimate\": 5000,\n            \"unit\": \"liters\"\n        },\n        {\n            \"serviceType\": \"CATERING\",\n            \"quantityEstimate\": 150,\n            \"unit\": \"meals\"\n        },\n        {\n            \"serviceType\": \"CABIN_CLEANING\",\n            \"quantityEstimate\": 1,\n            \"unit\": \"fixed\"\n        }\n    ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/staff/service-request",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "staff",
+                                "service-request"
+                            ]
+                        },
+                        "description": "Request multiple services for a flight. Service types: REFUELING, CATERING, BAGGAGE_HANDLING, CABIN_CLEANING, LINE_MAINTENANCE, WATER_SERVICE, LAVATORY_SERVICE, PUSHBACK_TOWING, GROUND_HANDLING, FLIGHT_INSPECTION, BAGGAGE_UNLOADING"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Request Services - Single Service",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"flightId\": \"{{flightId}}\",\n    \"services\": [\n        {\n            \"serviceType\": \"BAGGAGE_HANDLING\",\n            \"quantityEstimate\": 200,\n            \"unit\": \"bags\"\n        }\n    ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/staff/service-request",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "staff",
+                                "service-request"
+                            ]
+                        },
+                        "description": "Request a single service for a flight"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Flight Services",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/staff/flight/{{flightId}}/services",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "staff",
+                                "flight",
+                                "{{flightId}}",
+                                "services"
+                            ]
+                        },
+                        "description": "Get all service requests for a specific flight"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Verify Completed Service",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/staff/service/{{serviceRequestId}}/verify",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "staff",
+                                "service",
+                                "{{serviceRequestId}}",
+                                "verify"
+                            ]
+                        },
+                        "description": "Verify a completed service (triggers billing calculation)"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "🔧 Vendor Operations",
+            "description": "Service vendor endpoints for task management",
+            "item": [
+                {
+                    "name": "Check Vendor Access",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/vendor/",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "vendor",
+                                ""
+                            ]
+                        },
+                        "description": "Verify vendor access"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get My Tasks",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/vendor/my-tasks",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "vendor",
+                                "my-tasks"
+                            ]
+                        },
+                        "description": "Get all pending and in-progress tasks matching vendor's specialization"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Start Service",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/vendor/service/{{serviceRequestId}}/start",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "vendor",
+                                "service",
+                                "{{serviceRequestId}}",
+                                "start"
+                            ]
+                        },
+                        "description": "Claim and start working on a service request"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Service Progress - In Progress",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"in_progress\",\n    \"quantityUsed\": 2500\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/vendor/service/{{serviceRequestId}}/update",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "vendor",
+                                "service",
+                                "{{serviceRequestId}}",
+                                "update"
+                            ]
+                        },
+                        "description": "Update service progress with quantity used"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Complete Service",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"completed\",\n    \"quantityUsed\": 5000\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/vendor/service/{{serviceRequestId}}/update",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "vendor",
+                                "service",
+                                "{{serviceRequestId}}",
+                                "update"
+                            ]
+                        },
+                        "description": "Mark service as completed with final quantity used"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "💰 Finance Operations",
+            "description": "Finance team endpoints for tariffs, invoices, and revenue",
+            "item": [
+                {
+                    "name": "Check Finance Access",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/finance/",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "finance",
+                                ""
+                            ]
+                        },
+                        "description": "Verify finance role access"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📊 Tariff Management",
+                    "item": [
+                        {
+                            "name": "Create/Update Tariff - Refueling",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"serviceType\": \"REFUELING\",\n    \"baseFee\": 5000,\n    \"ratePerUnit\": 80,\n    \"unit\": \"liters\",\n    \"currency\": \"INR\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/tariffs",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "tariffs"
+                                    ]
+                                },
+                                "description": "Create or update tariff for refueling service"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Create/Update Tariff - Catering",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"serviceType\": \"CATERING\",\n    \"baseFee\": 2000,\n    \"ratePerUnit\": 150,\n    \"unit\": \"meals\",\n    \"currency\": \"INR\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/tariffs",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "tariffs"
+                                    ]
+                                },
+                                "description": "Create or update tariff for catering service"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Create/Update Tariff - Cabin Cleaning",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"serviceType\": \"CABIN_CLEANING\",\n    \"baseFee\": 15000,\n    \"ratePerUnit\": 0,\n    \"unit\": \"fixed\",\n    \"currency\": \"INR\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/tariffs",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "tariffs"
+                                    ]
+                                },
+                                "description": "Create or update tariff for cabin cleaning (fixed rate)"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Create/Update Tariff - Baggage Handling",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"serviceType\": \"BAGGAGE_HANDLING\",\n    \"baseFee\": 1000,\n    \"ratePerUnit\": 25,\n    \"unit\": \"bags\",\n    \"currency\": \"INR\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/tariffs",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "tariffs"
+                                    ]
+                                },
+                                "description": "Create or update tariff for baggage handling"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Create All Tariffs (Batch Setup)",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"serviceType\": \"LINE_MAINTENANCE\",\n    \"baseFee\": 25000,\n    \"ratePerUnit\": 500,\n    \"unit\": \"hours\",\n    \"currency\": \"INR\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/tariffs",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "tariffs"
+                                    ]
+                                },
+                                "description": "Use this to create remaining tariffs. Run multiple times with different bodies for: WATER_SERVICE, LAVATORY_SERVICE, PUSHBACK_TOWING, GROUND_HANDLING, FLIGHT_INSPECTION, BAGGAGE_UNLOADING"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get All Tariffs",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/tariffs",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "tariffs"
+                                    ]
+                                },
+                                "description": "Get all configured tariffs"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Delete Tariff",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/tariffs/REFUELING",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "tariffs",
+                                        "REFUELING"
+                                    ]
+                                },
+                                "description": "Delete a tariff by service type"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "🧾 Invoice Management",
+                    "item": [
+                        {
+                            "name": "Get All Invoices",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/invoices",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "invoices"
+                                    ]
+                                },
+                                "description": "Get all invoices"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get All Invoices - Filter by Status",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/invoices?status=pending_approval",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "invoices"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "status",
+                                            "value": "pending_approval"
+                                        }
+                                    ]
+                                },
+                                "description": "Get invoices filtered by status (draft, pending_approval, approved, rejected, paid)"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get All Invoices - Filter by Airline",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/invoices?airlineName=Air India",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "invoices"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "airlineName",
+                                            "value": "Air India"
+                                        }
+                                    ]
+                                },
+                                "description": "Get invoices filtered by airline name"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Invoice by ID",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/invoices/{{invoiceId}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "invoices",
+                                        "{{invoiceId}}"
+                                    ]
+                                },
+                                "description": "Get detailed invoice by ID"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Generate Invoice for Flight",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "var jsonData = pm.response.json();",
+                                            "if (jsonData.data && jsonData.data._id) {",
+                                            "    pm.collectionVariables.set('invoiceId', jsonData.data._id);",
+                                            "}"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/invoices/{{flightId}}/generate",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "invoices",
+                                        "{{flightId}}",
+                                        "generate"
+                                    ]
+                                },
+                                "description": "Generate invoice for a flight (moves from DRAFT to PENDING_APPROVAL)"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Approve Invoice",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/invoices/{{invoiceId}}/approve",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "invoices",
+                                        "{{invoiceId}}",
+                                        "approve"
+                                    ]
+                                },
+                                "description": "Approve a pending invoice"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Reject Invoice",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"reason\": \"Incorrect quantity recorded for refueling service\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/invoices/{{invoiceId}}/reject",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "invoices",
+                                        "{{invoiceId}}",
+                                        "reject"
+                                    ]
+                                },
+                                "description": "Reject an invoice with reason"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Mark Invoice as Paid",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/invoices/{{invoiceId}}/paid",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "invoices",
+                                        "{{invoiceId}}",
+                                        "paid"
+                                    ]
+                                },
+                                "description": "Mark an approved invoice as paid"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "📈 Revenue Reports",
+                    "item": [
+                        {
+                            "name": "Get Revenue Summary",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/revenue/summary",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "revenue",
+                                        "summary"
+                                    ]
+                                },
+                                "description": "Get overall revenue summary"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Revenue Summary - Date Range",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/finance/revenue/summary?startDate=2026-01-01&endDate=2026-01-31",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "finance",
+                                        "revenue",
+                                        "summary"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "startDate",
+                                            "value": "2026-01-01"
+                                        },
+                                        {
+                                            "key": "endDate",
+                                            "value": "2026-01-31"
+                                        }
+                                    ]
+                                },
+                                "description": "Get revenue summary for a specific date range"
+                            },
+                            "response": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "🔄 Complete Workflow Tests",
+            "description": "End-to-end workflow test sequences",
+            "item": [
+                {
+                    "name": "📋 1. Setup - Login as Admin",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.data) {",
+                                    "    pm.collectionVariables.set('accessToken', jsonData.data.accessToken);",
+                                    "    pm.collectionVariables.set('refreshToken', jsonData.data.refreshToken);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"admin_user\",\n    \"password\": \"Admin@123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "login"
+                            ]
+                        },
+                        "description": "Step 1: Login as admin to register a flight"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📋 2. Admin - Register Flight",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.data && jsonData.data._id) {",
+                                    "    pm.collectionVariables.set('flightId', jsonData.data._id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"flightNumber\": \"6E-505\",\n    \"aircraftRegistration\": \"VT-IND\",\n    \"airlineName\": \"IndiGo\",\n    \"aircraftType\": \"Airbus A320\",\n    \"origin\": \"BLR\",\n    \"destination\": \"DEL\",\n    \"sta\": \"2026-01-22T14:00:00.000Z\",\n    \"std\": \"2026-01-22T16:00:00.000Z\",\n    \"eta\": \"2026-01-22T14:00:00.000Z\",\n    \"etd\": \"2026-01-22T16:00:00.000Z\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/admin/flight-details",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "flight-details"
+                            ]
+                        },
+                        "description": "Step 2: Register a new flight"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📋 3. Admin - Mark Flight Arrived",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"arrived\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/admin/flight/{{flightId}}/status",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "flight",
+                                "{{flightId}}",
+                                "status"
+                            ]
+                        },
+                        "description": "Step 3: Mark flight as arrived to enable service requests"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📋 4. Switch - Login as Staff",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.data) {",
+                                    "    pm.collectionVariables.set('accessToken', jsonData.data.accessToken);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"staff_user\",\n    \"password\": \"Staff@123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "login"
+                            ]
+                        },
+                        "description": "Step 4: Login as airline staff"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📋 5. Staff - Request Services",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.data && jsonData.data.length > 0) {",
+                                    "    pm.collectionVariables.set('serviceRequestId', jsonData.data[0]._id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"flightId\": \"{{flightId}}\",\n    \"services\": [\n        {\n            \"serviceType\": \"REFUELING\",\n            \"quantityEstimate\": 3000,\n            \"unit\": \"liters\"\n        }\n    ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/staff/service-request",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "staff",
+                                "service-request"
+                            ]
+                        },
+                        "description": "Step 5: Request refueling service"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📋 6. Switch - Login as Vendor",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.data) {",
+                                    "    pm.collectionVariables.set('accessToken', jsonData.data.accessToken);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"refueling_vendor\",\n    \"password\": \"Vendor@123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "login"
+                            ]
+                        },
+                        "description": "Step 6: Login as refueling vendor"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📋 7. Vendor - Get Tasks",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/vendor/my-tasks",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "vendor",
+                                "my-tasks"
+                            ]
+                        },
+                        "description": "Step 7: Get assigned tasks"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📋 8. Vendor - Start Service",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/vendor/service/{{serviceRequestId}}/start",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "vendor",
+                                "service",
+                                "{{serviceRequestId}}",
+                                "start"
+                            ]
+                        },
+                        "description": "Step 8: Start the service"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📋 9. Vendor - Complete Service",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"completed\",\n    \"quantityUsed\": 3200\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/vendor/service/{{serviceRequestId}}/update",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "vendor",
+                                "service",
+                                "{{serviceRequestId}}",
+                                "update"
+                            ]
+                        },
+                        "description": "Step 9: Complete service with actual quantity"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📋 10. Switch - Login as Staff",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.data) {",
+                                    "    pm.collectionVariables.set('accessToken', jsonData.data.accessToken);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"staff_user\",\n    \"password\": \"Staff@123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "login"
+                            ]
+                        },
+                        "description": "Step 10: Login as staff to verify service"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📋 11. Staff - Verify Service",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/staff/service/{{serviceRequestId}}/verify",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "staff",
+                                "service",
+                                "{{serviceRequestId}}",
+                                "verify"
+                            ]
+                        },
+                        "description": "Step 11: Verify service and trigger billing"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📋 12. Switch - Login as Finance",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.data) {",
+                                    "    pm.collectionVariables.set('accessToken', jsonData.data.accessToken);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"finance_user\",\n    \"password\": \"Finance@123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "login"
+                            ]
+                        },
+                        "description": "Step 12: Login as finance"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📋 13. Finance - Generate Invoice",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.data && jsonData.data._id) {",
+                                    "    pm.collectionVariables.set('invoiceId', jsonData.data._id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/finance/invoices/{{flightId}}/generate",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "finance",
+                                "invoices",
+                                "{{flightId}}",
+                                "generate"
+                            ]
+                        },
+                        "description": "Step 13: Generate invoice for the flight"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📋 14. Finance - Approve Invoice",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/finance/invoices/{{invoiceId}}/approve",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "finance",
+                                "invoices",
+                                "{{invoiceId}}",
+                                "approve"
+                            ]
+                        },
+                        "description": "Step 14: Approve the invoice"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "📋 15. Finance - Mark Paid",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/finance/invoices/{{invoiceId}}/paid",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "finance",
+                                "invoices",
+                                "{{invoiceId}}",
+                                "paid"
+                            ]
+                        },
+                        "description": "Step 15: Mark invoice as paid - workflow complete!"
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ]
+}
