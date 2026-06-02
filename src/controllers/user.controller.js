@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
 import asyncHandler from '../utils/asyncHandlers.js';
-import {User} from '../models/user.model.js';
+import { User } from '../models/user.model.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { FlightDetails } from '../models/flightDetails.model.js';
+import { cookieOptions, UserRoles } from '../constants.js';
 
 
 
@@ -27,14 +28,19 @@ const generateAccessAndRefreshToken = async (userId) => {
 
 //  register user
 const registerUser = asyncHandler(async (req, res) => {
-  const { username, email, password, role, gender, number } = req.body;
-  
-// quick validation 
+  const { username, email, password, role, gender, number, airline, specialization } = req.body;
+
+  // quick validation 
   if ([username, email, password].some((field) => !field?.trim())) {
     throw new ApiError("All required fields must be provided", 400);
   }
 
-    // Check for existing user
+  const validRoles = Object.values(UserRoles);
+  if (role && !validRoles.includes(role)) {
+    throw new ApiError(`Invalid role. Must be one of: ${validRoles.join(', ')}`, 400);
+  }
+
+  // Check for existing user
   const existingUser = await User.findOne({
     $or: [{ email }, { username }],
   });
@@ -48,6 +54,8 @@ const registerUser = asyncHandler(async (req, res) => {
     role,
     gender,
     number,
+    airline,
+    specialization
   });
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
@@ -58,8 +66,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .cookie("accessToken", accessToken, { httpOnly: true, secure: true })
-    .cookie("refreshToken", refreshToken, { httpOnly: true, secure: true })
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
     .json(new ApiResponse(201, createdUser, "User registered successfully"));
 });
 
@@ -89,17 +97,12 @@ const loginUser = asyncHandler(async (req, res) => {
     "-password -refreshToken"
   );
 
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
-
   return res
     .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
     .json(
-      new ApiResponse(200, { username: loggedInUser.username, role: loggedInUser.role,accessToken, refreshToken }, "Login successful")
+      new ApiResponse(200, { username: loggedInUser.username, role: loggedInUser.role, accessToken, refreshToken }, "Login successful")
     );
 });
 
@@ -109,12 +112,10 @@ const logoutUser = asyncHandler(async (req, res) => {
     $set: { refreshToken: undefined },
   });
 
-  const options = { httpOnly: true, secure: true };
-
   return res
     .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
     .json(new ApiResponse(200, null, "User logged out successfully"));
 });
 
@@ -134,12 +135,10 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const { accessToken, refreshToken: newRefreshToken } =
       await generateAccessAndRefreshToken(user._id);
 
-    const options = { httpOnly: true, secure: true };
-
     return res
       .status(200)
-      .cookie("accessToken", accessToken, options)
-      .cookie("refreshToken", newRefreshToken, options)
+      .cookie("accessToken", accessToken, cookieOptions)
+      .cookie("refreshToken", newRefreshToken, cookieOptions)
       .json(
         new ApiResponse(
           200,
@@ -154,20 +153,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 const getArrivedFlights = asyncHandler(async (req, res) => {
-    const flights = await FlightDetails.find({ status: "arrived" });
-    
-    if (flights.length === 0) {
-        return res.status(200).json({
-            success: true,
-            data: [],
-            message: "No flights arrived"
-        });
-    } 
-    
-    res.status(200).json({
-        success: true,
-        data: flights
-    });
+  const flights = await FlightDetails.find({ status: "arrived" });
+
+  return res.status(200).json(
+    new ApiResponse(200, flights, flights.length ? "Arrived flights retrieved" : "No flights arrived")
+  );
 });
 
-export { registerUser,getArrivedFlights, loginUser, logoutUser, refreshAccessToken };
+export { registerUser, getArrivedFlights, loginUser, logoutUser, refreshAccessToken };
