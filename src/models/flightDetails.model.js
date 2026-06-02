@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
+import { TurnaroundStatus } from '../constants.js';
 
 const flightServiceSchema = new mongoose.Schema({
   // Flight Identification
@@ -27,7 +28,7 @@ const flightServiceSchema = new mongoose.Schema({
     required: true,
     uppercase: true,
     trim: true,
-   // example: "B737", "A320", "B777", "A321", "ATR72"
+    // example: "B737", "A320", "B777", "A321", "ATR72"
   },
 
   // Route & Schedule
@@ -36,7 +37,7 @@ const flightServiceSchema = new mongoose.Schema({
     required: true,
     uppercase: true,
     trim: true,
-   // example: "DEL", "BOM", "BLR"
+    // example: "DEL", "BOM", "BLR"
   },
   destination: {
     type: String,
@@ -58,12 +59,32 @@ const flightServiceSchema = new mongoose.Schema({
   etd: { // Estimated Time of Departure
     type: Date
   },
-  status:{
+  actualArrivalTime: { // Actual landing time
+    type: Date
+  },
+  actualDepartureTime: { // Actual departure time
+    type: Date
+  },
+
+  // Turnaround Status - The State Machine
+  turnaroundStatus: {
     type: String,
-    enum: ['scheduled', 'arrived'],
+    enum: Object.values(TurnaroundStatus),
+    default: TurnaroundStatus.IN_AIR
+  },
+
+  status: {
+    type: String,
+    enum: ['scheduled', 'arrived', 'departed'],
     default: 'scheduled'
+  },
+
+  // Link to invoice for billing
+  invoiceId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Invoice'
   }
 
-})
+}, { timestamps: true })
 
 export const FlightDetails = mongoose.model('FlightDetails', flightServiceSchema);

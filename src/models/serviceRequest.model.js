@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
 import { Counter } from "./counter.model.js";
+import { ServiceRequestStatus } from "../constants.js";
 
 const serviceRequestSchema = new mongoose.Schema(
   {
     flightId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "FlightDetails",
       required: true
     },
 
@@ -19,50 +21,52 @@ const serviceRequestSchema = new mongoose.Schema(
       index: true
     },
 
-    services: [
-      {
-        serviceType: {
-          type: String,
-          enum: [
-            "REFUELING",
-            "CABIN_CLEANING",
-            "GROUND_HANDLING",
-            "PUSHBACK",
-            "CATERING",
-            "FLIGHT_INSPECTION",
-            "BAGGAGE_UNLOADING",
-            "WATER_SERVICE",
-            "LAVATORY_SERVICE"
-          ],
-          required: true
-        },
+    serviceType: {
+      type: String,
+      required: true
+    },
 
-        progress: {
-          type: Number,
-          enum: [0, 25, 50, 75, 100],
-          default: 0
-        },
-
-        status: {
-          type: String,
-          enum: ["pending", "in_progress", "completed"],
-          default: "pending"
-        }
-      }
-    ],
-
-    //fetched from JWT
-    airlineStaffId: {
+    // Who requested this service?
+    requestedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true
     },
 
-    overallStatus: {
+    // Which vendor is assigned/handling this?
+    assignedVendor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    },
+
+    status: {
       type: String,
-      enum: ["pending", "in_progress", "completed"],
-      default: "pending"
-    }
+      enum: Object.values(ServiceRequestStatus),
+      default: ServiceRequestStatus.PENDING
+    },
+
+    // Quantity tracking for billing (e.g., 5000 liters, 150 meals)
+    quantityUsed: {
+      type: Number,
+      default: 0
+    },
+
+    unit: {
+      type: String,
+      enum: ['fixed', 'Kg', 'hour', 'meal', 'item'],
+      default: 'fixed'
+    },
+
+    // Cost snapshot (locked when verified)
+    calculatedCost: {
+      type: Number,
+      default: 0
+    },
+
+    // Timing
+    startTime: Date,
+    endTime: Date,
+    verifiedAt: Date
   },
   { timestamps: true }
 );
