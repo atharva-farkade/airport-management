@@ -3,8 +3,11 @@
 // Run this in MongoDB Atlas Shell or MongoDB Compass
 // =====================================================
 
-// First, clear existing tariffs
-db.tariffs.drop();
+// First, clear existing tariffs (with safety guard)
+if (db.getName() !== "asmpDB") {
+    throw new Error("Aborting: expected database 'asmpDB', got '" + db.getName() + "'");
+}
+db.tariffs.deleteMany({});
 
 // Insert all tariffs
 db.tariffs.insertMany([
