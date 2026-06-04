@@ -119,3 +119,11 @@ dist
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Node
 .DS_Store
+
+# Project context (AI reference files)
+.context/
+
+# Planning docs (not for repo)
+DEPLOYMENT_PLAN.md
+frontend-implementation-plan.md
+ISSUES.md
