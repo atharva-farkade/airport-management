@@ -4,7 +4,49 @@ import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { User } from '../models/user.model.js';
 import { TurnaroundManager } from '../utils/TurnaroundManager.js';
-import { TurnaroundStatus } from '../constants.js';
+import { TurnaroundStatus, UserRoles } from '../constants.js';
+
+// Admin: Create a new user
+const createUser = asyncHandler(async (req, res) => {
+  const { username, email, password, role, gender, number, airline, specialization } = req.body;
+
+  if ([username, email, password, number].some(f => !f?.trim())) {
+    throw new ApiError("Username, email, password, and phone number are required", 400);
+  }
+
+  const validRoles = Object.values(UserRoles);
+  if (!role || !validRoles.includes(role)) {
+    throw new ApiError(`Invalid role. Must be one of: ${validRoles.join(', ')}`, 400);
+  }
+
+  if (role === UserRoles.VENDOR && !specialization) {
+    throw new ApiError("Specialization is required for vendor role", 400);
+  }
+  if (role === UserRoles.AIRLINE_STAFF && !airline) {
+    throw new ApiError("Airline is required for airline staff role", 400);
+  }
+
+  const existing = await User.findOne({ $or: [{ email }, { username }] });
+  if (existing) throw new ApiError("User with this email or username already exists", 409);
+
+  const user = await User.create({
+    username: username.toLowerCase(),
+    email,
+    password,
+    role,
+    gender,
+    number,
+    airline,
+    specialization,
+  });
+
+  const created = await User.findById(user._id).select("-password -refreshToken");
+
+  return res.status(201).json(
+    new ApiResponse(201, created, "User created successfully")
+  );
+});
+export { createUser };
 
 
 //  Check the user role to give access
