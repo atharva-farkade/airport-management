@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { vendorService } from '../../services/vendor';
+import { useSocketEvent } from '../../hooks/useSocket';
 import { Button, Card, Badge } from '../ui';
 import { ServiceRequest, FlightDetails } from '../../types';
 
@@ -11,6 +12,8 @@ export function VendorTasks() {
   };
 
   useEffect(() => { loadTasks(); }, []);
+
+  useSocketEvent(['services_requested', 'service_started'], loadTasks);
 
   const startTask = async (id: string) => {
     await vendorService.startService(id);

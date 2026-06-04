@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { financeService } from '../../services/finance';
+import { useSocketEvent } from '../../hooks/useSocket';
 import { Card, Input, Button } from '../ui';
 
 interface RevenueSummary {
@@ -22,6 +23,8 @@ export function RevenueReports() {
   };
 
   useEffect(() => { loadSummary(); }, []);
+
+  useSocketEvent('invoice_paid', loadSummary);
 
   return (
     <div className="space-y-6">
