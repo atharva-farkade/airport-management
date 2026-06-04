@@ -111,6 +111,9 @@ export class TurnaroundManager {
             }
 
             console.log(`✈️  Flight ${flight.flightNumber}: ${currentStatus} → ${newStatus}`);
+
+            // Re-evaluate in case multiple transitions should cascade
+            return TurnaroundManager.updateTurnaroundStatus(flightId, io);
         }
 
         return flight;
