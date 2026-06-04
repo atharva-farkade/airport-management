@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authService } from '../services/auth';
+import { disconnectSocket } from './useSocket';
 import { AuthState, LoginCredentials, RegisterData, User } from '../types';
 
 interface AuthContextType extends AuthState {
@@ -39,6 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       updatedAt: '',
     };
     localStorage.setItem('asmp_user', JSON.stringify(user));
+    localStorage.setItem('asmp_token', data.accessToken);
     setState({ user, isAuthenticated: true, isLoading: false });
   };
 
@@ -50,7 +52,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try { await authService.logout(); } catch { /* ignore */ }
+    disconnectSocket();
     localStorage.removeItem('asmp_user');
+    localStorage.removeItem('asmp_token');
     setState({ user: null, isAuthenticated: false, isLoading: false });
   };
 
