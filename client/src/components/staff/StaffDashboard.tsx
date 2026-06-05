@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Plane, ClipboardCheck } from 'lucide-react';
 import { staffService } from '../../services/staff';
+import { useSocketEvent } from '../../hooks/useSocket';
 import { Card } from '../ui';
 import { FlightDetails } from '../../types';
 
 export function StaffDashboard() {
   const [flights, setFlights] = useState<FlightDetails[]>([]);
 
-  useEffect(() => {
+  const loadFlights = () => {
     staffService.getArrivedFlights().then(r => setFlights(r.data.data));
-  }, []);
+  };
+
+  useEffect(() => { loadFlights(); }, []);
+
+  useSocketEvent(['flight_arrived', 'services_requested', 'service_progress_update'], loadFlights);
 
   return (
     <div className="space-y-6">

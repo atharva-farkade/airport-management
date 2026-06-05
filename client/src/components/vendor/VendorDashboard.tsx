@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Wrench, CheckCircle } from 'lucide-react';
 import { vendorService } from '../../services/vendor';
+import { useSocketEvent } from '../../hooks/useSocket';
 import { Card } from '../ui';
 import { ServiceRequest } from '../../types';
 
 export function VendorDashboard() {
   const [tasks, setTasks] = useState<ServiceRequest[]>([]);
 
-  useEffect(() => {
+  const loadTasks = () => {
     vendorService.getMyTasks().then(r => setTasks(r.data.data));
-  }, []);
+  };
+
+  useEffect(() => { loadTasks(); }, []);
+
+  useSocketEvent(['services_requested', 'service_started'], loadTasks);
 
   const pending = tasks.filter(t => t.status === 'pending' || t.status === 'assigned').length;
   const inProgress = tasks.filter(t => t.status === 'in_progress').length;

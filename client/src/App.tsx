@@ -4,7 +4,6 @@ import { useSocket } from './hooks/useSocket';
 import { useEffect, useState } from 'react';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { LoginPage } from './components/auth/LoginPage';
-import { RegisterPage } from './components/auth/RegisterPage';
 import { Layout } from './components/layout/Layout';
 
 // Admin
@@ -71,7 +70,6 @@ function AppContent() {
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
         <Route path="/dashboard" element={<DashboardRedirect />} />
 
         {/* Admin Routes */}

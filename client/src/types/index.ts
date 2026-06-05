@@ -83,16 +83,18 @@ export interface Tariff {
 }
 
 export interface InvoiceLineItem {
-  serviceType: ServiceType;
+  serviceRequestId?: string;
+  serviceName: string;
   quantity: number;
-  unitRate: number;
-  amount: number;
+  unitPrice: number;
+  totalPrice: number;
 }
 
 export interface Invoice {
   _id: string;
   flightId: string | FlightDetails;
-  airline: string;
+  airlineName: string;
+  flightNumber: string;
   lineItems: InvoiceLineItem[];
   totalAmount: number;
   status: InvoiceStatus;

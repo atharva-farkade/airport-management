@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { adminService } from '../../services/admin';
+import { useSocketEvent } from '../../hooks/useSocket';
 import { Button, Input, Card, Table, Badge, Modal } from '../ui';
 import { FlightDetails } from '../../types';
 
@@ -15,6 +16,8 @@ export function FlightManagement() {
   };
 
   useEffect(() => { loadFlights(); }, []);
+
+  useSocketEvent(['flight_arrived', 'flight_departed', 'turnaround_status_update'], loadFlights);
 
   const onSubmit = async (data: Record<string, string>) => {
     setLoading(true);
@@ -37,9 +40,24 @@ export function FlightManagement() {
     }
   };
 
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (error) {
+      const t = setTimeout(() => setError(null), 5000);
+      return () => clearTimeout(t);
+    }
+  }, [error]);
+
   const updateStatus = async (id: string, status: string) => {
-    await adminService.updateFlightStatus(id, status);
-    loadFlights();
+    try {
+      setError(null);
+      await adminService.updateFlightStatus(id, status);
+      loadFlights();
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to update flight status';
+      setError(msg);
+    }
   };
 
   const statusBadge = (status: string) => {
@@ -76,6 +94,19 @@ export function FlightManagement() {
         <h1 className="text-2xl font-display font-bold">Flight Management</h1>
         <Button onClick={() => setShowForm(true)}>+ Register Flight</Button>
       </div>
+
+      {error && (
+        <div className="fixed top-4 right-4 z-50 max-w-sm bg-red-950 border border-red-500/50 border-l-4 border-l-red-500 rounded-md px-5 py-4 shadow-[0_0_20px_rgba(239,68,68,0.2)] animate-[slideIn_0.3s_ease]">
+          <div className="flex items-start gap-3">
+            <span className="text-red-400 text-lg">⚠</span>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-red-300">Action Failed</p>
+              <p className="text-xs text-red-400/80 mt-1">{error}</p>
+            </div>
+            <button onClick={() => setError(null)} className="text-red-400/60 hover:text-red-300 text-sm">✕</button>
+          </div>
+        </div>
+      )}
 
       <Card>
         <Table columns={columns} data={flights} keyExtractor={f => f._id} emptyMessage="No flights registered" />

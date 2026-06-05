@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plane, Users, Clock } from 'lucide-react';
 import { adminService } from '../../services/admin';
+import { useSocketEvent } from '../../hooks/useSocket';
 import { Card } from '../ui';
 import { FlightDetails } from '../../types';
 
@@ -8,10 +9,14 @@ export function AdminDashboard() {
   const [flights, setFlights] = useState<FlightDetails[]>([]);
   const [userCount, setUserCount] = useState(0);
 
-  useEffect(() => {
+  const loadData = () => {
     adminService.getUpcomingFlights().then(r => setFlights(r.data.data.flights));
     adminService.getUsers().then(r => setUserCount(r.data.data.length));
-  }, []);
+  };
+
+  useEffect(() => { loadData(); }, []);
+
+  useSocketEvent(['flight_arrived', 'flight_departed', 'services_requested'], loadData);
 
   const arrived = flights.filter(f => f.status === 'arrived').length;
   const scheduled = flights.filter(f => f.status === 'scheduled').length;

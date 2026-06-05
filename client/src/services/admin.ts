@@ -38,6 +38,9 @@ export const adminService = {
   removeUser: (data: { username?: string; email?: string }) =>
     api.delete<ApiResponse<null>>('/admin/remove-user', { params: data }),
 
+  createUser: (data: { username: string; email: string; password: string; role: string; gender?: string; number: string; airline?: string; specialization?: string }) =>
+    api.post<ApiResponse<unknown>>('/admin/create-user', data),
+
   updateFlightStatus: (flightId: string, status: string) =>
     api.patch<ApiResponse<FlightDetails>>(`/admin/flight/${flightId}/status`, { status }),
 

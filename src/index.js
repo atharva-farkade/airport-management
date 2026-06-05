@@ -30,7 +30,15 @@ io.use((socket, next) => {
     }
 });
 
-app.set("io", io); 
+app.set("io", io);
+
+io.on("connection", (socket) => {
+    console.log(`🔌 Client connected: ${socket.user._id} (${socket.user.role})`);
+    socket.join(socket.user.role);
+    socket.on("disconnect", () => {
+        console.log(`❌ Client disconnected: ${socket.user._id}`);
+    });
+});
 
 connectDB()
 .then (()=>{

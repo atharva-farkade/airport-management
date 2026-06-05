@@ -11,9 +11,10 @@ interface TableProps<T> {
   data: T[];
   keyExtractor: (item: T) => string;
   emptyMessage?: string;
+  onRowClick?: (item: T) => void;
 }
 
-export function Table<T>({ columns, data, keyExtractor, emptyMessage = 'No data' }: TableProps<T>) {
+export function Table<T>({ columns, data, keyExtractor, emptyMessage = 'No data', onRowClick }: TableProps<T>) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full">
@@ -29,7 +30,7 @@ export function Table<T>({ columns, data, keyExtractor, emptyMessage = 'No data'
             <tr><td colSpan={columns.length} className="px-4 py-8 text-center text-slate-500">{emptyMessage}</td></tr>
           ) : (
             data.map(item => (
-              <tr key={keyExtractor(item)} className="border-t border-slate-800 even:bg-slate-900/50 hover:bg-sky-500/5 transition-colors">
+              <tr key={keyExtractor(item)} className={`border-t border-slate-800 even:bg-slate-900/50 hover:bg-sky-500/5 transition-colors${onRowClick ? ' cursor-pointer' : ''}`} onClick={() => onRowClick?.(item)}>
                 {columns.map(col => (
                   <td key={col.key} className="px-4 py-3 text-sm text-slate-200">
                     {col.render ? col.render(item) : String((item as Record<string, unknown>)[col.key] ?? '')}

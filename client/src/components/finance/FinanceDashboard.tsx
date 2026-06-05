@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Receipt, TrendingUp, CreditCard } from 'lucide-react';
 import { financeService } from '../../services/finance';
+import { useSocketEvent } from '../../hooks/useSocket';
 import { Card } from '../ui';
 import { Invoice, Tariff } from '../../types';
 
@@ -8,10 +9,14 @@ export function FinanceDashboard() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [tariffs, setTariffs] = useState<Tariff[]>([]);
 
-  useEffect(() => {
+  const loadData = () => {
     financeService.getInvoices().then(r => setInvoices(r.data.data));
     financeService.getTariffs().then(r => setTariffs(r.data.data));
-  }, []);
+  };
+
+  useEffect(() => { loadData(); }, []);
+
+  useSocketEvent(['invoice_generated', 'invoice_paid'], loadData);
 
   const totalRevenue = invoices.filter(i => i.status === 'paid').reduce((s, i) => s + i.totalAmount, 0);
   const pendingApproval = invoices.filter(i => i.status === 'pending_approval').length;

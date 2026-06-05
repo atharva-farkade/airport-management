@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Plane } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { Button, Input, Card } from '../ui';
@@ -57,8 +57,8 @@ export function LoginPage() {
           </Button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-slate-400">
-          No account? <Link to="/register" className="text-sky-400 hover:underline">Register</Link>
+        <p className="mt-4 text-center text-sm text-slate-500">
+          Contact your admin to get an account.
         </p>
       </Card>
     </div>

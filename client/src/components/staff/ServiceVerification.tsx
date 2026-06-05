@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { staffService } from '../../services/staff';
+import { useSocketEvent } from '../../hooks/useSocket';
 import { Button, Card, Table, Badge } from '../ui';
 import { FlightDetails, ServiceRequest } from '../../types';
 
@@ -8,15 +9,19 @@ export function ServiceVerification() {
   const [selectedFlightId, setSelectedFlightId] = useState('');
   const [services, setServices] = useState<ServiceRequest[]>([]);
 
+  const loadServices = () => {
+    if (selectedFlightId) {
+      staffService.getFlightServices(selectedFlightId).then(r => setServices(r.data.data));
+    }
+  };
+
   useEffect(() => {
     staffService.getArrivedFlights().then(r => setFlights(r.data.data));
   }, []);
 
-  useEffect(() => {
-    if (selectedFlightId) {
-      staffService.getFlightServices(selectedFlightId).then(r => setServices(r.data.data));
-    }
-  }, [selectedFlightId]);
+  useEffect(() => { loadServices(); }, [selectedFlightId]);
+
+  useSocketEvent(['service_started', 'service_progress_update', 'service_verified'], loadServices, [selectedFlightId]);
 
   const verify = async (id: string) => {
     await staffService.verifyService(id);

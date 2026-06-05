@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { adminService } from '../../services/admin';
+import { useSocketEvent } from '../../hooks/useSocket';
 import { Card } from '../ui';
 import { FlightDetails, TurnaroundStatus } from '../../types';
 
@@ -34,11 +35,15 @@ function TurnaroundTimeline({ current }: { current: TurnaroundStatus }) {
 export function TurnaroundProgress() {
   const [flights, setFlights] = useState<FlightDetails[]>([]);
 
-  useEffect(() => {
+  const loadFlights = () => {
     adminService.getUpcomingFlights().then(r => {
       setFlights(r.data.data.flights.filter((f: FlightDetails) => f.status === 'arrived'));
     });
-  }, []);
+  };
+
+  useEffect(() => { loadFlights(); }, []);
+
+  useSocketEvent(['turnaround_status_update', 'service_started', 'service_verified', 'flight_departed'], loadFlights);
 
   return (
     <div className="space-y-6">
