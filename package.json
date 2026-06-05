@@ -5,7 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js --verbose"
+    "start": "node src/index.js",
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js --verbose",
+    "docker:up": "docker-compose up --build",
+    "docker:down": "docker-compose down"
   },
   "repository": {
     "type": "git",
